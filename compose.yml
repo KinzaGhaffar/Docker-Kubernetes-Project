@@ -1,0 +1,29 @@
+version: '3.9.0'
+
+services:
+  kuksa.val:
+    image: ghcr.io/smaddis/kuksa-val:0.2.0
+    ports:
+      - "8090:8090"
+
+  f1demo2val:
+    image: docker-registry.rahti.csc.fi/kinzaghaffar/f1demo2val:latest
+    depends_on:
+      - kuksa.val
+    environment:
+      - KUKSAVAL_HOST=kuksa.val
+      - KUKSAVAL_PORT=8090
+      - MQTT_URL=mqtt.kghaffar23.rahtiapp.fi
+      - MQTT_PORT=443
+      - TOPIC_PREFIX=kghaffar23
+
+  val2mqtt:
+    image: docker-registry.rahti.csc.fi/kinzaghaffar/val2mqtt:latest
+    depends_on:
+      - kuksa.val
+    environment:
+      - KUKSAVAL_HOST=kuksa.val
+      - KUKSAVAL_PORT=8090
+      - MQTT_URL=mqtt.kghaffar23.rahtiapp.fi
+      - MQTT_PORT=443
+      - TOPIC_PREFIX=kghaffar23
